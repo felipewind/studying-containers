@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  # https://onexlab-io.medium.com/docker-compose-postgres-initdb-ba0021deef76
+  postgresql:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+    ports:
+        - 5432:5432
+    networks:
+      - test-net
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql      
+
+  pgadmin-compose:
+    image: dpage/pgadmin4
+    environment: 
+      - PGADMIN_DEFAULT_EMAIL=test@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=test
+    ports: 
+      - "16543:80"
+    depends_on: 
+      - postgresql    
+    networks:
+      - test-net          
+
+networks:
+  test-net:
+    driver: bridge
